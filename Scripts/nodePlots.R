@@ -11,10 +11,10 @@ nodeDepthDF <- function(ds){
   simdata_means <- rowMeans(simdata[,,,],dims = 3) %>% colMeans()
   
   
-  df<- rbind(melt(obsdata_means) %>% mutate(dataset = "observed"),
+  df<- rbind(melt(obsdata_means, as.is = TRUE) %>% mutate(dataset = "observed"),
              melt(simdata_means) %>% mutate(dataset = "simulated"),
              melt(obsdata_means) %>% mutate(value = value - melt(simdata_means)$value, dataset = "difference")) %>%
-    mutate(node_age = fct_rev(Var2))
+    mutate(node_age = fct_rev(X2))
    
   return(df)
 }
@@ -27,8 +27,8 @@ df <- rbind(nodeDepthDF("Amphibian") %>% mutate(taxon = "Amphibian"),
 df$taxon <- factor(df$taxon, levels = c("Bird","Squamate","Amphibian","Mammal"))
 
 levels(df$node_age) <- 10^seq(from =2.75, to =-3, by = -0.25)
-levels(df$Var1) <- c("All","1","10","100","1000","10,000","100,000")
-colnames(df)[1] <- "Minimum FGR size for inclusion (km^2)"
+levels(df$X1) <- c("All","1","10","100","1000","10,000","100,000")
+colnames(df)[1] <- "Minimum FGR size (km^2)"
 
 df$yearslost <- df$value*as.numeric(df$node_age)
 
@@ -75,12 +75,12 @@ depthdifferences <- function(yvar) {
   scale_fill_manual(values = c("#fbee5a", "#f6cc5e", "#f1a962", "#ec8766", "#e7656a")) +
   
   geom_line(data = df %>% filter(dataset == "difference", 
-                                 `Minimum FGR size for inclusion (km^2)` != "All",
+                                 `Minimum FGR size (km^2)` != "All",
                                  node_age >= 10^-2), 
             aes(x = node_age, 
                 y = !!yvar, #change back to "value" to get node number
-                color = `Minimum FGR size for inclusion (km^2)`, 
-                group = `Minimum FGR size for inclusion (km^2)`),
+                color = `Minimum FGR size (km^2)`, 
+                group = `Minimum FGR size (km^2)`),
             size = 1.5) +
   # demarcate Geologic Periods
   geom_vline(xintercept = geointervals$end, linetype = "dashed", color="#999999", size=1) +
