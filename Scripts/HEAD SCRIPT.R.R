@@ -60,7 +60,7 @@ genStats <- data.frame(rbind("Amphibian" = frStats(ADF),
                              "Mammal" = frStats(Mammals),
                              "Reptile" = frStats(GARD)))
 
-#### FIGURE 2 ####
+#### FIGURE S1 ####
 
 source("Scripts/densityPlots.R") #generates histogram ("hist") density plot ("density"), and range size vs proportion of range in fossil record ("sizevsproportion") plots
 
@@ -97,7 +97,7 @@ fossBarPlot(df = read.csv(file = "Results/Bird/BirdGroupInclusion.csv", header =
             cdf = read.csv(file = "Results/Bird/BirdGroupCompleteness.csv", header = T),
             taxon = "Bird")
 
-#### FIGURE 3####
+#### FIGURE 2####
 library("ggpubr")
 loadPlot <- function(taxon){#Quickly loads PD loss figures for multiplotting - removes labels
   x<- readRDS(file = paste0("Results/",taxon,"/",taxon,"RecordBarPlot.R"))
@@ -170,7 +170,7 @@ completeness_line <- ggplot(data = Barplotdf %>% filter(Inclusion != "Modern"),
   guides(color = "none") +
   facet_wrap(~order,strip.position = "left")
 
-Figure_3 <- ggarrange(diversity_barplot,completeness_line)
+Figure_2 <- ggarrange(diversity_barplot,completeness_line)
 
 #### TABLE 1 ####
 require('rlang')
@@ -293,9 +293,11 @@ npasL <- phylosig(nonpass[[1]], x = setNames(BDF$fossilArea,BDF$Tree_Name)[nonpa
 PDgen(BDF,bird.phy,"Bird", rep = 1000)
 rm(bird.phy)
 
-#### FIGURE 4 ####
+#### FIGURE 3 ####
 source("Scripts/Phyplots.R")
-#### FIGURE 5
+#### FIGURE 4
+source("Scripts/calculate_extinction_rates_short.R")
+source("Scripts/Figure_4.R")
 #### Figure S3 - Node depth ####
 source("Scripts/nodePlots.R")
 

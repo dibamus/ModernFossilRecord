@@ -61,10 +61,10 @@ difference <- melt(difference[,7:9], id.vars = c("Inclusion"))  %>%
 
  
 exMag <- ggplot(data = difference, aes(x = Inclusion, y = 1 - value, group = variable, linetype = variable)) +
-  geom_line(size = 1.3, color = fossAES$Amphibian[[2]]) +
+  geom_line(linewidth = 1.3, color = fossAES$Amphibian[[2]]) +
   geom_point(size = 10, color = fossAES$Amphibian[[2]], pch = "*") +
   coord_cartesian(xlim = c(0.5,7.5),ylim = c(-0.02,0.45), expand = FALSE)+
-  geom_vline(xintercept = c(1.5,2.5,3.5,4.5,5.5,6.5), color = "gray",size = 0.5)+
+  geom_vline(xintercept = c(1.5,2.5,3.5,4.5,5.5,6.5), color = "gray",linewidth = 0.5)+
   scale_y_continuous(labels = scales::label_percent(accuracy = 1L)) +
   geom_label(data = difference %>% filter(Inclusion == "Modern"),
             aes(x = 1, y = 1-value, label = variable),
@@ -85,7 +85,11 @@ exMag <- ggplot(data = difference, aes(x = Inclusion, y = 1 - value, group = var
 
 
 combinedFig <- plot_grid(exMag,p, nrow = 2, align = "v", axis = "lrbt",rel_heights = c(0.5,1))
+readRDS("Figures/ExtinctionRates.rds")
+Fig4 <- plot_grid(ExRateGraph,combinedFig, rel_widths = c(2,3))
 
-ggsave(filename = "Figures/Figure_5.png",
-       plot = combinedFig,
+ggsave(filename = "Figures/Figure_4.png",
+       plot = Fig4,
        height = 6, width = 8)
+
+
