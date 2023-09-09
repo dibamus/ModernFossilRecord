@@ -86,12 +86,12 @@ combinedPD <- ggplot(allData, aes(cutoff, Tm,Sm)) +
   cols +
   fils +
   labs(color = "Mean SD + 95% CI", fill = "Mean SD + 95% CI",
-       x = bquote('Minimum FGR size for inclusion '(km^2)),
-       y = bquote('Proportion of PD represented')) +
+       #x = bquote('Minimum FGR size for inclusion '(km^2)),
+       y = bquote('% PD represented')) +
   guides(color = "none", fill = "none")+
   theme_light() + 
-  theme(axis.text.x=element_text(color = "black", size=11, angle=30, vjust=1, hjust=1),
-        panel.border = element_blank(),
+  theme(axis.text.x=element_blank(),
+        axis.title.x = element_blank(),
         panel.grid.minor.x = element_blank())
 
 
@@ -106,17 +106,17 @@ differencePD <- ggplot(allData, aes(cutoff, y = diff, color = Taxon)) +
   cols+
   scale_y_continuous(labels = scales::percent) +
   geom_hline(yintercept = 0, linetype = 'dashed', size = 1.3) +
-  #ggtitle("Difference between Observed and Simulated PD") +
+  #ggtitle("Difference between observed and simulated phylogenetic diversity") +
   labs(x = bquote('Minimum FGR size for inclusion '(km^2)),
-       y = bquote('Difference of Means (% of total PD)')) +
+       y = bquote('D of means (% PD)')) + #Δ of means
   guides(color = "none", size = "none", fill = "none") +
   theme_light() + 
-  theme(axis.text.x=element_text(color = "black", size=11, angle=30, vjust=1, hjust=1),
-        panel.border = element_blank(),
+  theme(axis.text.x=element_text(color = "black", size=9, angle=45, vjust=1, hjust=1),
         panel.grid.minor.x = element_blank())
   
-combined <- ggarrange(combinedPD,differencePD) + guides(color = "none",fill = "none")
+combined <- ggarrange(combinedPD,differencePD, nrow = 2, align = "v") + guides(color = "none",fill = "none")
 
-ggsave("Figures/Figure_4.png", plot = combined,
+ggsave("Figures/Figure_3_1col.pdf", plot = combined,
        width = 7,
-       height = 5)
+       height = 10, 
+       unit = "cm")

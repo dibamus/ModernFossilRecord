@@ -98,8 +98,8 @@ depthdifferences <- function(yvar) {
 depthdifferences("value") +
   
   #Text annotations
-  geom_text(data = helpfultext, aes(x,y,label=label),hjust = "left") +
-  geom_text(data = geoLabels,
+  geom_text(data = helpfultext, size =9, aes(x,y,label=label),hjust = "left") +
+  geom_text(data = geoLabels, size=9,
             aes(y = -100, x = end - end*0.2, label = Period),
             angle = 90,
             hjust = "left") +
@@ -112,12 +112,28 @@ depthdifferences("value") +
 #generate history lost plot
 depthdifferences("yearslost") +
   
-  geom_text(data = helpfultext, aes(x,y*10,label=label2),hjust = "left") +
-  geom_text(data = geoLabels,
+  geom_text(data = helpfultext, size =9, aes(x,y*10,label=label2),hjust = "left") +
+  geom_text(data = geoLabels, size =9,
             aes(y = -1000, x = end - end*0.2, label = Period),
             angle = 90,
             hjust = "left") +
   guides(fill = "none") +
   ylab("Difference in phylogenetic diversity (Ma) recovered by geographically structured VS random preservation") +
   
-  ggtitle(paste("Geographic structuring of phylogenetic diversity recovery potential"))         
+  ggtitle(paste("Geographic structuring of phylogenetic diversity recovery potential"))
+
+#for publication as figure 5
+fig5 <- depthdifferences("yearslost") +  
+  geom_text(data = helpfultext, size =9 * (5/14), aes(x,y*10,label=label2),hjust = "left") +
+  geom_text(data = geoLabels, size =9 * (5/14),
+            nudge_x = 0.1,
+            aes(y = -1000, x = end - end*0.2, label = Period),
+            angle = 90,
+            hjust = "left") +
+  guides(fill = "none")+
+  ylab(expression(paste("\u394"," phylogenetic diversity (Ma) recovered"))) +
+  theme(strip.text.x.top = element_blank(),
+        
+        legend.title = element_blank())
+
+ggsave("Figures/Figure_4_1col.pdf", plot=fig5, width = 15, height = 10, units="cm")

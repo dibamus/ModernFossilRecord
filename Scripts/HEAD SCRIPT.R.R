@@ -3,6 +3,7 @@ setwd("proper working directory")
 
 library('tidyverse')
 library('dplyr')
+source('Scripts/fossilAesthetics.R')
 
 #### HEAD SCRIPT####
 #This script is meant to be the primary thread for running all R analyses for the paper. These analyses require:
@@ -73,11 +74,16 @@ survivingAmphibians <- which(!ADF$category %in% c("EN","CR","EW","EX","DD"))
 GenerateDropoffs(ADF[survivingAmphibians,], "survivingAmphibian")
 
 GenerateDropoffs(Mammals, "Mammal")
+survivingMammals <- which(!Mammals$category %in% c("EN","CR","EW","EX","DD"))
+GenerateDropoffs(Mammals[survivingMammals,], "survivingMammal")
 
 GenerateDropoffs(GARD, "Reptile")
+survivingReptiles <- which(!GARD$REDcat %in% c("EN","CR","EW","EX","DD"))
+GenerateDropoffs(GARD[survivingReptiles,], "survivingReptile")
 
 GenerateDropoffs(BDF, "Bird")
-
+survivingBirds <- which(!BDF$category %in% c("EN","CR","EW","EX","DD"))
+GenerateDropoffs(BDF[survivingBirds,], "survivingBird")
 
 source("Scripts/BarPlot.R", local = TRUE)
 
@@ -129,8 +135,10 @@ diversity_barplot <- ggplot(data = Barplotdf %>%
   ylab('Number of species') +
   theme_light() +
   geom_vline(xintercept = 1.5, color = "darkgray", size = 1.5) +
-  theme(axis.text.x=element_text(color = "black", size=11, angle=30, vjust=1, hjust=1),
-        panel.grid.major.x = element_blank())+
+  theme(axis.text.x=element_text(color = "black", size=9, angle=45, vjust=1, hjust=1),
+        panel.grid.major.x = element_blank(),
+        strip.text.y = element_blank() , 
+        strip.background = element_blank())+
   scale_x_discrete(labels= c("Extant",
                              "1",
                              "10",
@@ -155,11 +163,15 @@ completeness_line <- ggplot(data = Barplotdf %>% filter(Inclusion != "Modern"),
   
   scale_color_manual(breaks = names(c(fossAES[[1]],fossAES[[2]],fossAES[[4]],fossAES[[5]])), 
                      values = unlist(c(fossAES[[1]],fossAES[[2]],fossAES[[4]],fossAES[[5]]))) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent, n.breaks = 6) +
   xlab(bquote('Minimum FGR size for inclusion '(km^2))) +
   ylab('Percent species diversity preserved') +
   theme_light() + 
-  theme(axis.text.x=element_text(color = "black", size=11, angle=30, vjust=1, hjust=1))+
+  theme(axis.text.x=element_text(color = "black", size=9, angle=45, vjust=1, hjust=1),
+        strip.text.y = element_blank() , 
+        strip.background = element_blank(),
+        panel.spacing.x = unit(1.5, "cm"),
+        panel.grid.minor.y = element_line(linetype="dashed"))+
   scale_x_discrete(labels= c("1",
                              "10",
                              "100",
@@ -171,6 +183,8 @@ completeness_line <- ggplot(data = Barplotdf %>% filter(Inclusion != "Modern"),
   facet_wrap(~order,strip.position = "left")
 
 Figure_2 <- ggarrange(diversity_barplot,completeness_line)
+
+ggsave("Figures/Figure_2_2col.pdf", Figure_2, width = 13.5, height = 10, unit = "cm")
 
 #### TABLE 1 ####
 require('rlang')
@@ -186,7 +200,7 @@ getinclist <- function(df,taxon = "binomial"){ # get list of how many species/ge
   return(l)
 }
 
-incTaxa <- rbind(Amphibian_species = getinclist(ADF,"binomial"), #removing "family" since it is not in the GARD data
+incTaxa <- rbind(Amphibian_species = getinclist(ADF,"binomial"),
                  Amphibian_Genera = getinclist(ADF,"genus"),
                  Amphibian_Families = getinclist(ADF,"family"),
                  
@@ -198,13 +212,25 @@ incTaxa <- rbind(Amphibian_species = getinclist(ADF,"binomial"), #removing "fami
            Reptile_Genera = getinclist(GARD,"genus"),
            Reptile_Families = getinclist(GARD,"family"),
            
+           Surviving_Reptile_Species = getinclist(GARD[survivingReptiles,],"binomial"),
+           Surviving_Reptile_Genera = getinclist(GARD[survivingReptiles,],"genus"),
+           Surviving_Reptile_Families = getinclist(GARD[survivingReptiles,],"family"),
+           
            Mammal_species = getinclist(Mammals,"binomial"),
            Mammal_Genera = getinclist(Mammals,"genus"),
            Mammal_Families = getinclist(Mammals,"family"),
            
+           Surviving_Mammal_Species = getinclist(Mammals[survivingMammals,],"binomial"),
+           Surviving_Mammal_Genera = getinclist(Mammals[survivingMammals,],"genus"),
+           Surviving_Mammal_Families = getinclist(Mammals[survivingReptiles,],"family"),
+           
            Bird_species = getinclist(BDF,"binomial"),
            Bird_Genera = getinclist(BDF,"genus"),
-           Bird_Families = getinclist(BDF,"family")
+           Bird_Families = getinclist(BDF,"family"),
+           
+           Surviving_Bird_Species = getinclist(BDF[survivingBirds,],"binomial"),
+           Surviving_Bird_Genera = getinclist(BDF[survivingBirds,],"genus"),
+           Surviving_Bird_Families = getinclist(BDF[survivingBirds,],"family")
            )
 
 fun <- function(x){
@@ -295,10 +321,10 @@ rm(bird.phy)
 
 #### FIGURE 3 ####
 source("Scripts/Phyplots.R")
-#### FIGURE 4
+#### FIGURE 5 (previously known as "figure 4") & TABLE 3
 source("Scripts/calculate_extinction_rates_short.R")
-source("Scripts/Figure_4.R")
-#### Figure S3 - Node depth ####
+source("Scripts/Figure_4_update.R")
+#### Figure 4 (previously figure s3) - Node depth ####
 source("Scripts/nodePlots.R")
 
 ## Get Tree Statistics #### NOT CRITICAL ####

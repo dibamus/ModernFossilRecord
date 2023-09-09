@@ -169,20 +169,17 @@ ExRates <- function(){
                                        Bird = fossAES$Bird$Nonpasserine))
   
   ExRateGraph <- ggplot(m, aes(group = rowname, color = rowname))+
-    geom_line(data = m %>% filter(variable !='modern'), 
+    geom_line(data = m, 
               aes(x = variable , y = value), 
               linewidth = 1.3)+
-    geom_hline(data = m%>% filter(variable == 'modern'),
-               aes(yintercept = value, color = rowname), 
-               linetype = "dashed",
-               linewidth = 1)+
     cols+
     labs(color = "Taxon",
-         x = bquote('Minimum FGR size for inclusion '(km^2)),
+         #x = bquote('Minimum FGR size for inclusion '(km^2)),
          y = bquote('Extinction Rate (E/MSY)')) +
     guides(color = "none", fill = "none")+
     theme_light()+
-    theme(axis.text.x=element_text(color = "black", size=11, angle=30, vjust=1, hjust=1))
+    xlab(bquote('Minimum FGR size for inclusion '(km^2)))+
+    theme(axis.text.x=element_blank())
   return(list(graph = ExRateGraph,
               birdER = bir_IUCN,
               reptileER =rep_IUCN,
@@ -192,4 +189,4 @@ ExRates <- function(){
 Extinction_rates <- ExRates()
 saveRDS(Extinction_rates, file = 'results/ExtinctionRates.rds')
 
-saveRDS(ExRateGraph, file = 'Figures/ExtinctionRates.rds')
+saveRDS(Extinction_rates$graph, file = 'Figures/ExtinctionRates.rds')

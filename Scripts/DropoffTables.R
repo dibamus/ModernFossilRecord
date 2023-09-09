@@ -1,6 +1,7 @@
 # Dropoff/Exclusion Functions
 GenerateDropoffs <- function(df,taxon){
   require('ggplot2')
+  
   groupcol <- df$group
   groups <- levels(as.factor(groupcol))
   
@@ -69,6 +70,9 @@ GenerateDropoffs <- function(df,taxon){
   #####Plot Dropoff ####
   library("reshape2")
   source("Scripts/fossilAesthetics.R")
+  fossAES$survivingBird <- fossAES$Bird
+  fossAES$survivingMammal <- fossAES$Mammal
+  fossAES$survivingReptile <- fossAES$Reptile
   
   melted <- melt(dropoff, id.vars=colnames())
   colnames(melted)<- c("Group","Size","Percent")
